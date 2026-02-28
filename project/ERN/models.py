@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-Class build:
+class build:
     relic_1 = #text
     relic_2 = #text
     relic_3 = #text
@@ -10,4 +10,3 @@ Class build:
     relic_6 = #text
     character = #text
     made_by = #user
-    
