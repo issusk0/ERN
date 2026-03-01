@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from . import utils
 urlpatterns = [
-    path('build/<int:id>', views.build, name = 'build'),
+    path('build/<int:id>', utils.build, name = 'build'),
 ]

@@ -3,39 +3,23 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 #to not confuse Django's users model
 class App_User(AbstractUser):
-    icon = models.ImageField(upload_to='users_icon/', blank=True, null=True)
+    icon = models.CharField(max_length=100)#save url
     def __str__(self):
         return self.username
     
 class Normal_Relic(models.Model):
-    RELIC_TYPES = [
-        ('RED', 'Red'),
-        ('BLUE', 'Blue'),
-        ('GREEN', 'Green'),
-        ('YELLOW', 'Yellow'),
-        ('SMALL_YELLOW', 'Small Yellow'),
-        ('SMALL_RED', 'Small Red'),
-        ('SMALL_BLUE', 'Small Blue'),
-        ('SMALL_GREEN', 'Small Green'),
-    ]
-    
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=20)
     buff_1 = models.CharField(max_length=20, blank=True, null=True)
     buff_2 = models.CharField(max_length=20, blank=True, null=True)
     buff_3 = models.CharField(max_length=20, blank=True, null=True)
-    icon_relic = models.ImageField(upload_to='relics/normal/', blank=True, null=True)
-    relic_type = models.CharField(max_length=20, choices=RELIC_TYPES)
+    icon_relic = models.CharField(max_length=100)#save url
+    relic_type = models.CharField(max_length=20)
+    relic_color = models.CharField(max_length=10)
     
     def __str__(self):
         return f"{self.name} ({self.get_relic_type_display()})"
     
 class Cursed_Relic(models.Model):
-    CURSED_RELIC_TYPES = [
-        ('CURSED_RED', 'Cursed Red'),
-        ('CURSED_GREEN', 'Cursed Green'),
-        ('CURSED_YELLOW', 'Cursed Yellow'),
-        ('CURSED_BLUE', 'Cursed Blue'),
-    ]
     name = models.CharField(max_length=20)
     buff_1 = models.CharField(max_length=20, blank=True, null=True)
     buff_2 = models.CharField(max_length=20, blank=True, null=True)
@@ -43,14 +27,15 @@ class Cursed_Relic(models.Model):
     debuff_1 = models.CharField(max_length=20, blank=True, null=True)
     debuff_2 = models.CharField(max_length=20, blank=True, null=True)
     debuff_3 = models.CharField(max_length=20, blank=True, null=True)
-    cursed_relic_type = models.CharField(max_length=20,choices=CURSED_RELIC_TYPES)
-    cursed_icon_relic = models.ImageField(upload_to='relics/cursed/', blank=True, null=True)
+    cursed_relic_type = models.CharField(max_length=20)
+    cursed_icon_relic = models.CharField(max_length=100)#save url
+    cursed_relic_color = models.CharField(max_length=10)
     def __str__(self):
-        return f"{self.name} ({self.get_cursed_relic_type_display()})"
+        return f"{self.name}: {self.buff_1} {self.buff_2} {self.buff_3}"
 
 class Character(models.Model):
     name = models.CharField(max_length=20, db_index=True)
-    icon = models.ImageField(upload_to='characters/', blank=True,null=True)
+    icon = models.CharField(max_length=500)#save url
 
 
 class Build_Tag(models.Model):
