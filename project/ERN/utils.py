@@ -44,7 +44,10 @@ class Helpers:
         icon_url = cache.get(cache_key)
         
         if not icon_url:
-            icon_url = cls.get_relic_icon_url(relic_type)
+            icon_url = cls.get_relic_icon_cached(relic_type)
             cache.set(cache_key, icon_url, 3600)  #cached 1 hour
             
         return icon_url
+    
+
+

@@ -38,11 +38,6 @@ class Character(models.Model):
     icon = models.CharField(max_length=500)#save url
 
 
-class Build_Tag(models.Model):
-    name = models.CharField(max_length=50, db_index=True)
-    def __str__(self):
-        return self.name
-
 class Build(models.Model):
     title = models.CharField(max_length=50, db_index=True)
     description = models.CharField(max_length=100, blank=True, null=True)
@@ -54,29 +49,40 @@ class Build(models.Model):
     cursed_relic_1 = models.ForeignKey(Cursed_Relic, on_delete=models.SET_NULL, null=True, blank=True, related_name='builds_cursed1')
     cursed_relic_2 = models.ForeignKey(Cursed_Relic, on_delete=models.SET_NULL, null=True, blank=True, related_name='builds_cursed2')
     cursed_relic_3 = models.ForeignKey(Cursed_Relic, on_delete=models.SET_NULL, null=True, blank=True, related_name='builds_cursed3')
-    liked = models.IntegerField(default=0)
+    
+
+    @property
+    def likes(self):
+        return self.votes.filter(vote_type = True).count()
+    @property
+    def dislike(self):
+        return self.votes.filter(vote_type = False).count()
+    
     character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name='character_build')
-    author_name = models.CharField(max_length=100, blank=True)
     is_public = models.BooleanField(default=True)
-    tags = models.ManyToManyField(Build_Tag, blank=True, related_name='build_tag')
     user = models.ForeignKey(App_User, on_delete=models.CASCADE)
     class Meta:
-        ordering = ['-liked', '-created_at']  #sorted by newest and liked ones
+        ordering = ['-created_at']
         indexes = [
             models.Index(fields=['created_at', 'is_public']),
-            models.Index(fields=['character', 'liked']),
-            models.Index(fields=['user','created_at'])
+            models.Index(fields=['character']),
+            models.Index(fields=['user', 'created_at'])
         ]
     
     def __str__(self):
         return f"{self.title} - {self.character.name}"
     
 class Build_Vote(models.Model):
+    LIKE = True
+    DISLIKE = False
+    VOTE_CHOICES = [(True, 'Like'), (False, 'Dislike')]
+    
     build = models.ForeignKey(Build, on_delete=models.CASCADE, related_name='votes')
     user = models.ForeignKey(App_User, on_delete=models.CASCADE)
+    vote_type = models.BooleanField(choices=VOTE_CHOICES)  # True=like, False=dislike
     created_at = models.DateTimeField(auto_now_add=True)
-
+    
     class Meta: 
-        unique_together = ['build', 'user']
+        unique_together = ['build', 'user']  # un voto por usuario por build
 
 
